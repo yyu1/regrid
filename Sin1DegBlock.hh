@@ -3,6 +3,7 @@
 #define __SIN1DEGBLOCK_HH_INCLUDED__
 //---------------------------
 
+#include <cstdint>
 #include <iostream>
 #include <fstream>
 
@@ -25,7 +26,7 @@ class Sin1DegBlock
 		void addValue(float val, unsigned long x, unsigned long y);
 		void reset();
 		void writeMeanAsFloat(std::ofstream *outstream);
-		void writeMeanAsInt(std::ofstream *outstream);
+		void writeMeanAsInt16(std::ofstream *outstream);
 };
 #endif //__SIN1DEGBLOCK_HH_INCLUDED__
 
