@@ -45,3 +45,12 @@ void Sin1DegBlock::addValue(float val, unsigned long x, unsigned long y) {
 	sum_grid[index] += val;
 	++count_grid[index];
 }
+
+void Sin1DegBlock::reset() {
+
+	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
+		sum_grid[i] = 0;
+		count_grid[i] = 0;
+	}
+
+}

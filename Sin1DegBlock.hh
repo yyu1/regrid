@@ -19,6 +19,7 @@ class Sin1DegBlock
 		~Sin1DegBlock();
 		float getMean(unsigned long x, unsigned long y);
 		void addValue(float val, unsigned long x, unsigned long y);
+		void reset();
 
 };
 #endif //__SIN1DEGBLOCK_HH_INCLUDED__
