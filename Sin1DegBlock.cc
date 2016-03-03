@@ -54,3 +54,28 @@ void Sin1DegBlock::reset() {
 	}
 
 }
+
+void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outstream) {
+	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
+
+	//Check if stream is ok to be written to
+	if (!outstream->is_open()) { throw; }
+
+	//Create memory block to hold mean values
+	float *meanGrid = new float[block_length];
+
+	//calculate means
+
+	for (unsigned long i=0; i<block_length; ++i) {
+		if (count_grid[i] > 0) {
+			meanGrid[i] = sum_grid[i] / (float)count_grid[i];
+		} else {
+			meanGrid[i] = MISSING_VALUE;
+		}
+
+	}
+
+	outstream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(float)));
+
+	delete[] meanGrid;
+}
