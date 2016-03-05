@@ -21,10 +21,7 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 
 
 ALOS1DegBlock::~ALOS1DegBlock() {
-
-
-
-
+	delete[] value_grid;
 }
 
 
