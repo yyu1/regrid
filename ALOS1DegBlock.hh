@@ -17,13 +17,16 @@
 #define ALOS_TILE_XDIM 4500
 #define ALOS_TILE_YDIM 4500
 #define ALOS_TYPE uint16_t   //unsigned 16-bit integer
-#define DATA_TOP_DIR /nobackupp6/nexprojects/CMS-ALOS/25m/2007/uncompressed
 
 
 class ALOS1DegBlock
 {
 	private:
-		ALOS_TYPE *value_grid;
+		ALOS_TYPE *hh_grid;
+		ALOS_TYPE *hv_grid;
+		char *mask_grid;
+		int myLatitude;
+		std::string data_top_dir;
 		//std::string construct_tile_name(int longitude, int latitude);
 
 
@@ -31,6 +34,8 @@ class ALOS1DegBlock
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
 		//Latitude given for the constructor is the upper latitude of the tile (since ALOS tile coordinates are given as upper left corner of the tile
 		~ALOS1DegBlock();
+		int currentLatitude();
+		void reload(int latitude); // reload data from another latitude so we don't need to reallocate memory
 		std::string construct_tile_name(int longitude, int latitude);
 
 
