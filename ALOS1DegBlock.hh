@@ -24,13 +24,14 @@ class ALOS1DegBlock
 {
 	private:
 		ALOS_TYPE *value_grid;
-		std::string construct_tile_name(int longitude, int latitude);
+		//std::string construct_tile_name(int longitude, int latitude);
 
 
 	public:
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
 		//Latitude given for the constructor is the upper latitude of the tile (since ALOS tile coordinates are given as upper left corner of the tile
 		~ALOS1DegBlock();
+		std::string construct_tile_name(int longitude, int latitude);
 
 
 
