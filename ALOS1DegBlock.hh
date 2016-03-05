@@ -13,6 +13,7 @@
 
 
 //CLASS Definitions
+#define ALOS_BLOCK_XDIM 1620000
 #define ALOS_TILE_XDIM 4500
 #define ALOS_TILE_YDIM 4500
 #define ALOS_TYPE uint16_t   //unsigned 16-bit integer
@@ -28,6 +29,7 @@ class ALOS1DegBlock
 
 	public:
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
+		//Latitude given for the constructor is the upper latitude of the tile (since ALOS tile coordinates are given as upper left corner of the tile
 		~ALOS1DegBlock();
 
 
