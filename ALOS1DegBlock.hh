@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <iostream>
 #include <fstream>
-
+#include "Sin1DegBlock.hh"
 
 
 
@@ -31,6 +31,7 @@ class ALOS1DegBlock
 		unsigned long long blockNPixelOffset(int tileLongitude, unsigned long long tileY);
 		void readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude);
 		void readTile8(std::ifstream *inFile, char *valueBlock, int longitude);
+		unsigned long vertMap(unsigned int tileY);  //maps tileY to output regridded y
 
 	public:
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
@@ -38,7 +39,7 @@ class ALOS1DegBlock
 		~ALOS1DegBlock();
 		int currentLatitude();
 		void reload(int latitude); // reload data from another latitude so we don't need to reallocate memory
-
+		void regrid(Sin1DegBlock *hhOutBlock, Sin1DegBlock *hvOutBlock);
 
 
 };

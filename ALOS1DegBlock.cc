@@ -1,11 +1,11 @@
 #include "ALOS1DegBlock.hh"
 
-
 ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	if (latitude > 90 || latitude < -89)  {throw;}
 
 	data_top_dir = "/nobackupp6/nexprojects/CMS-ALOS/25m/2007/uncompressed/";
 	myLatitude = latitude;
+
 
 	//allocate heap space for the data block
 	const unsigned long long block_xdim = ALOS_BLOCK_XDIM;
@@ -149,4 +149,15 @@ void ALOS1DegBlock::readTile8(std::ifstream *inFile, char *valueBlock, int longi
 
 }
 
+unsigned long ALOS1DegBlock::vertMap(unsigned int tileY) {
+	//we are mapping from 0.8sec to 3 sec.
+	unsigned long temp1 = tileY * TARGET_YDIM;
+	temp1 /= ALOS_TILE_YDIM;
+	return temp1;
+}
 
+void ALOS1DegBlock::regrid(Sin1DegBlock* hhOutBlock, Sin1DegBlock* hvOutBlock) {
+
+
+
+}
