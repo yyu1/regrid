@@ -39,6 +39,8 @@ class ALOS1DegBlock
 		~ALOS1DegBlock();
 		int currentLatitude();
 		void reload(int latitude); // reload data from another latitude so we don't need to reallocate memory
+
+		//This function does the main work of putting ALOS looks into output Sin1DegBlocks.
 		void regrid(Sin1DegBlock *hhOutBlock, Sin1DegBlock *hvOutBlock);
 
 
