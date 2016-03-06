@@ -17,7 +17,7 @@
 #define ALOS_TILE_XDIM 4500
 #define ALOS_TILE_YDIM 4500
 #define ALOS_TYPE uint16_t   //unsigned 16-bit integer
-
+#define ALOS_MISSING_VALUE 0  //missing value to replace for where there are no tiles (water)
 
 class ALOS1DegBlock
 {
@@ -27,8 +27,10 @@ class ALOS1DegBlock
 		char *mask_grid;
 		int myLatitude;
 		std::string data_top_dir;
-		//std::string construct_tile_name(int longitude, int latitude);
-
+		std::string construct_tile_name(int longitude, int latitude);
+		unsigned long long blockNPixelOffset(int tileLongitude, unsigned long long tileY);
+		void readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude);
+		void readTile8(std::ifstream *inFile, char *valueBlock, int longitude);
 
 	public:
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
@@ -36,9 +38,6 @@ class ALOS1DegBlock
 		~ALOS1DegBlock();
 		int currentLatitude();
 		void reload(int latitude); // reload data from another latitude so we don't need to reallocate memory
-		std::string construct_tile_name(int longitude, int latitude);
-
-
 
 
 

@@ -23,6 +23,7 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	}
 
 	//Read data from files into new grid
+	std::ifstream inFile;
 	for (int i=-180; i < 180; ++i) {
 		std::string tileFilePrefix = blockFilePrefix;
 		tileFilePrefix.append(this->construct_tile_name(i, myLatitude));
@@ -34,8 +35,23 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 		hvTileName.append("sl_HV");
 		std::string maskTileName = tileFilePrefix;
 		maskTileName.append("mask");
+	
 
-		std::cout << hhTileName << ' ' << hvTileName << ' ' << maskTileName << '\n';
+		//Read HH
+		inFile.open(hhTileName, std::ios::binary | std::ios::in);
+		readTile16(&inFile, hh_grid, i);
+		inFile.close();
+
+		//Read HV
+		inFile.open(hvTileName, std::ios::binary | std::ios::in);
+		readTile16(&inFile, hv_grid, i);
+		inFile.close();
+
+		//Read mask
+		inFile.open(maskTileName, std::ios::binary | std::ios::in);
+		readTile8(&inFile, mask_grid, i);
+		inFile.close();
+
 	}
 
 }
@@ -49,6 +65,17 @@ ALOS1DegBlock::~ALOS1DegBlock() {
 
 int ALOS1DegBlock::currentLatitude() {
 	return myLatitude;
+}
+
+//This returns the pixel offset (array index for the alos1deg source block) for a given tile and row within tile
+unsigned long long ALOS1DegBlock::blockNPixelOffset(int tileLongitude, unsigned long long tileY) {
+
+	if (tileLongitude < -180 || tileLongitude > 179 || tileY > ALOS_TILE_YDIM-1) {throw;}
+
+	unsigned long long offset = tileY * ALOS_BLOCK_XDIM + (tileLongitude + 180)*ALOS_TILE_XDIM;
+
+	return offset;
+
 }
 
 std::string ALOS1DegBlock::construct_tile_name(int longitude, int latitude) {
@@ -84,3 +111,42 @@ std::string ALOS1DegBlock::construct_tile_name(int longitude, int latitude) {
 
 	return tile_name;
 }
+
+
+void ALOS1DegBlock::readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude) {
+	if (longitude < -180 || longitude > 179) {throw;}
+	if (inFile->good()) {
+		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
+			ALOS_TYPE *curMemPointer = valueBlock+blockNPixelOffset(longitude, j);
+			inFile->read(reinterpret_cast<char*>(curMemPointer), std::streamsize(ALOS_TILE_XDIM*sizeof(ALOS_TYPE)));
+		}
+	} else {
+		//Fill with padding of missing value
+		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
+			unsigned long long curOffSet = blockNPixelOffset(longitude, j);
+			for (unsigned long i=0; i<ALOS_TILE_XDIM; ++i) {
+				valueBlock[curOffSet+i] = ALOS_MISSING_VALUE;
+			}
+		}
+	}
+}
+
+void ALOS1DegBlock::readTile8(std::ifstream *inFile, char *valueBlock, int longitude) {
+	if (longitude < -180 || longitude > 179) {throw;}
+	if (inFile->good()) {
+		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
+			inFile->read(valueBlock+blockNPixelOffset(longitude, j), std::streamsize(ALOS_TILE_XDIM*sizeof(ALOS_TYPE)));
+		}
+	} else {
+		//Fill with padding of missing value
+		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
+			unsigned long long curOffSet = blockNPixelOffset(longitude, j);
+			for (unsigned long i=0; i<ALOS_TILE_XDIM; ++i) {
+				valueBlock[curOffSet+i] = ALOS_MISSING_VALUE;
+			}
+		}
+	}
+
+}
+
+
