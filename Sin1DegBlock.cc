@@ -4,8 +4,8 @@
 Sin1DegBlock::Sin1DegBlock() {
 
 	sum_grid = new float[TARGET_XDIM*TARGET_YDIM];
-	count_grid = new char[TARGET_XDIM*TARGET_YDIM];
-	waterCount_grid = new char[TARGET_XDIM*TARGET_YDIM];
+	count_grid = new unsigned char[TARGET_XDIM*TARGET_YDIM];
+	landWater_grid = new signed char[TARGET_XDIM*TARGET_YDIM];
 
 	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
 		sum_grid[i] = 0;
@@ -17,7 +17,7 @@ Sin1DegBlock::Sin1DegBlock() {
 Sin1DegBlock::~Sin1DegBlock() {
 	delete[] sum_grid;
 	delete[] count_grid;
-	delete[] waterCount_grid;
+	delete[] landWater_grid;
 }
 
 
@@ -48,14 +48,14 @@ void Sin1DegBlock::addValue(float val, unsigned long x, unsigned long y) {
 	++count_grid[index];
 }
 
-void Sin1DegBlock::addWaterPixel(unsigned long x, unsigned long y) {
+void Sin1DegBlock::addLandWaterPixel(unsigned long x, unsigned long y, bool isLand) {
 
 	if ((x > TARGET_XDIM) || (y > TARGET_YDIM)) {
 		throw; //out of bounds
 	}
 
 	unsigned long index = y*TARGET_XDIM+x;
-	waterCount_grid[index]++;
+	isLand ? landWater_grid[index]++ : landWater_grid[index]--; //For final determination, negative is water, >=0 is land
 }
 
 void Sin1DegBlock::reset() {
@@ -89,7 +89,7 @@ void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outValStream, std::ofstream *
 		}
 
 		//create landmask
-		landMaskGrid[i] = count_grid[i] >= waterCount_grid[i];
+		landMaskGrid[i] = landWater_grid[i] >= 0;
 
 	}
 
@@ -121,7 +121,7 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *
 			meanGrid[i] = MISSING_VALUE;
 		}
 		//create landmask
-		landMaskGrid[i] = count_grid[i] >= waterCount_grid[i];
+		landMaskGrid[i] = landWater_grid[i] >= 0;
 
 	}
 

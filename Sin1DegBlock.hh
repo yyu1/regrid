@@ -17,8 +17,8 @@ class Sin1DegBlock
 {
 	private:
 		float *sum_grid;
-		char *count_grid;
-		char *waterCount_grid;
+		unsigned char *count_grid;
+		signed char *landWater_grid;
 
 	public:
 		Sin1DegBlock();
