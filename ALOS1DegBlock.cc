@@ -158,6 +158,20 @@ unsigned long ALOS1DegBlock::vertMap(unsigned int tileY) {
 	return temp1;
 }
 
+unsigned long ALOS1DegBlock::horzMap(unsigned long xPix, double latitude) {
+	if (xPix >= ALOS_BLOCK_XDIM || latitude < -90 || latitude > 90) {throw;}
+
+	//Convert Latitude to Radians
+	latitude = latitude * M_PI / 180;
+
+	//convert xPix to a unit that is signed
+	double xValue = (double)xPix - (ALOS_BLOCK_XDIM/2) + 0.5;
+	xValue = xValue * cos(latitude);
+
+	return (unsigned long)(xValue + (ALOS_BLOCK_XDIM/2));
+
+}
+
 void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 	
 

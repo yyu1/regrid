@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include "Sin1DegBlock.hh"
 
 
@@ -31,9 +32,10 @@ class ALOS1DegBlock
 		unsigned long long blockNPixelOffset(int tileLongitude, unsigned long long tileY);
 		void readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude);
 		void readTile8(std::ifstream *inFile, unsigned char *valueBlock, int longitude);
-		unsigned long vertMap(unsigned int tileY);  //maps tileY to output regridded y
 
 	public:
+		static unsigned long vertMap(unsigned int tileY);  //maps tileY to output regridded y
+		static unsigned long horzMap(unsigned long xPix, double latitude); //map to target block x
 		ALOS1DegBlock(int latitude); //create and read in 1 deg global block for given latitude
 		//Latitude given for the constructor is the upper latitude of the tile (since ALOS tile coordinates are given as upper left corner of the tile
 		~ALOS1DegBlock();
