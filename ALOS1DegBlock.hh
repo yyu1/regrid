@@ -24,13 +24,13 @@ class ALOS1DegBlock
 	private:
 		ALOS_TYPE *hh_grid;
 		ALOS_TYPE *hv_grid;
-		char *mask_grid;
+		unsigned char *mask_grid;
 		int myLatitude;
 		std::string data_top_dir;
 		std::string construct_tile_name(int longitude, int latitude);
 		unsigned long long blockNPixelOffset(int tileLongitude, unsigned long long tileY);
 		void readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude);
-		void readTile8(std::ifstream *inFile, char *valueBlock, int longitude);
+		void readTile8(std::ifstream *inFile, unsigned char *valueBlock, int longitude);
 		unsigned long vertMap(unsigned int tileY);  //maps tileY to output regridded y
 
 	public:

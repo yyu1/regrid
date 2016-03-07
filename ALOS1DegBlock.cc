@@ -13,7 +13,7 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	const unsigned long long block_npixels = block_xdim * tile_ydim;
 	hh_grid = new ALOS_TYPE[block_npixels];
 	hv_grid = new ALOS_TYPE[block_npixels];
-	mask_grid = new char[block_npixels];
+	mask_grid = new unsigned char[block_npixels];
 
 	std::string blockFilePrefix = data_top_dir;
 	if (myLatitude >= 0) {
@@ -133,11 +133,11 @@ void ALOS1DegBlock::readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int
 	}
 }
 
-void ALOS1DegBlock::readTile8(std::ifstream *inFile, char *valueBlock, int longitude) {
+void ALOS1DegBlock::readTile8(std::ifstream *inFile, unsigned char *valueBlock, int longitude) {
 	if (longitude < -180 || longitude > 179) {throw;}
 	if (inFile->good()) {
 		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
-			inFile->read(valueBlock+blockNPixelOffset(longitude, j), std::streamsize(ALOS_TILE_XDIM*sizeof(ALOS_TYPE)));
+			inFile->read((char*)(valueBlock+blockNPixelOffset(longitude, j)), std::streamsize(ALOS_TILE_XDIM*sizeof(ALOS_TYPE)));
 		}
 	} else {
 		//Fill with padding of missing value
