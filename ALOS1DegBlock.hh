@@ -19,6 +19,7 @@
 #define ALOS_TILE_YDIM 4500
 #define ALOS_TYPE uint16_t   //unsigned 16-bit integer
 #define ALOS_MISSING_VALUE 0  //missing value to replace for where there are no tiles (water)
+#define ALOS_PIXEL_SIZE_DEGREES 0.00022222222222222222222222222222222222222222222222  //alos 0.8 sec in units of degrees
 
 class ALOS1DegBlock
 {

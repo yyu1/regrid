@@ -71,7 +71,7 @@ void Sin1DegBlock::reset() {
 
 void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream *outHVValStream, std::ofstream *outMaskStream) {
 	//check if stream is ok to be written to
-	if (!(outHHValstream->is_open()  && outHVValStream->is_open())) { throw; }
+	if (!(outHHValStream->is_open()  && outHVValStream->is_open())) { throw; }
 
 
 	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
@@ -101,7 +101,7 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream
 
 	//Work on HV
 
-	for (unsigned long lon i=0; i<block_length; ++i) {
+	for (unsigned long long i=0; i<block_length; ++i) {
 		if (landMaskGrid[i]) {
 			if (count_grid[i] > 0) {
 				meanGrid[i] = (uint16_t)((hvSum_grid[i] / (float)count_grid[i])*10000);

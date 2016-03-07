@@ -28,6 +28,7 @@ class Sin1DegBlock
 		void addValue(float hhVal, float hvVal, unsigned long x, unsigned long y);
 		void reset();
 		void writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream *outHVValStream, std::ofstream *outMaskStream);
+		void addLandWaterPixel(unsigned long x, unsigned long y, bool isLand);
 };
 #endif //__SIN1DEGBLOCK_HH_INCLUDED__
 

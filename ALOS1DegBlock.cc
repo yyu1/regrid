@@ -173,7 +173,39 @@ unsigned long ALOS1DegBlock::horzMap(unsigned long xPix, double latitude) {
 }
 
 void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
-	
+	unsigned long long index;
+	double latitude;
+	unsigned long targetX, targetY;
 
+	for (unsigned int j=0; j<ALOS_TILE_YDIM; ++j) {
+		latitude = (double)myLatitude + ((double)j+0.5)*ALOS_PIXEL_SIZE_DEGREES;
+		targetY = vertMap(j);
+		for (unsigned long i=0; i<ALOS_BLOCK_XDIM; ++i) {
+			index = (unsigned long long)j*ALOS_BLOCK_XDIM + i;
+
+			if (mask_grid[index] == 0) {continue;} //Alos pixel has no data
+
+			targetX = horzMap(i, latitude);
+			switch(mask_grid[index]) {
+				case 50:
+					//water
+					outBlock->addLandWaterPixel(targetX, targetY, false);
+				case 100:
+					//layover
+					outBlock->addLandWaterPixel(targetX, targetY, true);
+				case 150:
+					//shadow
+					outBlock->addLandWaterPixel(targetX, targetY, true);
+				case 255:
+					//land
+					outBlock->addValue(hh_grid[index], hv_grid[index], targetX, targetY);
+					outBlock->addLandWaterPixel(targetX, targetY, true);
+			}
+					
+
+
+			
+		}
+	}
 
 }
