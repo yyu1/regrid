@@ -24,7 +24,9 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 
 	//Read data from files into new grid
 	std::ifstream inFile;
+	std::cout << "Reading tiles for latitude " << latitude;
 	for (int i=-180; i < 180; ++i) {
+		std::cout << '.';
 		std::string tileFilePrefix = blockFilePrefix;
 		tileFilePrefix.append(this->construct_tile_name(i, myLatitude));
 		tileFilePrefix.append("_07_");
@@ -53,7 +55,7 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 		inFile.close();
 
 	}
-
+	std::cout << '\n';
 }
 
 
