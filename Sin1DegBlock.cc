@@ -5,6 +5,7 @@ Sin1DegBlock::Sin1DegBlock() {
 
 	sum_grid = new float[TARGET_XDIM*TARGET_YDIM];
 	count_grid = new char[TARGET_XDIM*TARGET_YDIM];
+	waterCount_grid = new char[TARGET_XDIM*TARGET_YDIM];
 
 	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
 		sum_grid[i] = 0;
@@ -16,6 +17,7 @@ Sin1DegBlock::Sin1DegBlock() {
 Sin1DegBlock::~Sin1DegBlock() {
 	delete[] sum_grid;
 	delete[] count_grid;
+	delete[] waterCount_grid;
 }
 
 
@@ -46,6 +48,16 @@ void Sin1DegBlock::addValue(float val, unsigned long x, unsigned long y) {
 	++count_grid[index];
 }
 
+void Sin1DegBlock::addWaterPixel(unsigned long x, unsigned long y) {
+
+	if ((x > TARGET_XDIM) || (y > TARGET_YDIM)) {
+		throw; //out of bounds
+	}
+
+	unsigned long index = y*TARGET_XDIM+x;
+	waterCount_grid[index]++;
+}
+
 void Sin1DegBlock::reset() {
 
 	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
@@ -55,7 +67,7 @@ void Sin1DegBlock::reset() {
 
 }
 
-void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outstream) {
+void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outValStream, std::ofstream *outMaskStream) {
 	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
 
 	//Check if stream is ok to be written to
@@ -63,6 +75,9 @@ void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outstream) {
 
 	//Create memory block to hold mean values
 	float *meanGrid = new float[block_length];
+
+	//Create memory block to hold land mask
+	char *landMaskGrid = new char[block_length];
 
 	//calculate means
 
@@ -73,14 +88,19 @@ void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outstream) {
 			meanGrid[i] = MISSING_VALUE;
 		}
 
+		//create landmask
+		landMaskGrid[i] = count_grid[i] >= waterCount_grid[i];
+
 	}
 
-	outstream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(float)));
+	outValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(float)));
+	outMaskStream->write(landMaskGrid, block_length);
 
 	delete[] meanGrid;
+	delete[] landMaskGrid;
 }
 
-void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outstream) {
+void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *outMaskStream) {
 	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
 
 	//check if stream is ok to be written to
@@ -89,6 +109,8 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outstream) {
 	//Create memory block to hold mean values
 	uint16_t *meanGrid = new uint16_t[block_length];
 
+	//Create memory block to hold land mask
+	char *landMaskGrid = new char[block_length];
 
 	//calculate means
 
@@ -98,10 +120,14 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outstream) {
 		} else {
 			meanGrid[i] = MISSING_VALUE;
 		}
+		//create landmask
+		landMaskGrid[i] = count_grid[i] >= waterCount_grid[i];
 
 	}
 
-	outstream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(uint16_t)));
+	outValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(uint16_t)));
+	outMaskStream->write(landMaskGrid, block_length);
 
 	delete[] meanGrid;
+	delete[] landMaskGrid;
 }

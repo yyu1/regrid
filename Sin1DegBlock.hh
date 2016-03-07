@@ -18,6 +18,7 @@ class Sin1DegBlock
 	private:
 		float *sum_grid;
 		char *count_grid;
+		char *waterCount_grid;
 
 	public:
 		Sin1DegBlock();
@@ -25,8 +26,8 @@ class Sin1DegBlock
 		float getMean(unsigned long x, unsigned long y);
 		void addValue(float val, unsigned long x, unsigned long y);
 		void reset();
-		void writeMeanAsFloat(std::ofstream *outstream);
-		void writeMeanAsInt16(std::ofstream *outstream);
+		void writeMeanAsFloat(std::ofstream *outValStream, std::ofstream *outMaskStream);
+		void writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *outMaskStream);
 };
 #endif //__SIN1DEGBLOCK_HH_INCLUDED__
 
