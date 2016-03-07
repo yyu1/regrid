@@ -3,19 +3,18 @@
 
 Sin1DegBlock::Sin1DegBlock() {
 
-	sum_grid = new float[TARGET_XDIM*TARGET_YDIM];
+	hhSum_grid = new float[TARGET_XDIM*TARGET_YDIM];
+	hvSum_grid = new float[TARGET_XDIM*TARGET_YDIM];
 	count_grid = new unsigned char[TARGET_XDIM*TARGET_YDIM];
 	landWater_grid = new signed char[TARGET_XDIM*TARGET_YDIM];
 
-	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
-		sum_grid[i] = 0;
-		count_grid[i] = 0;
-	}
+	this->reset();
 
 }
 
 Sin1DegBlock::~Sin1DegBlock() {
-	delete[] sum_grid;
+	delete[] hhSum_grid;
+	delete[] hvSum_grid;
 	delete[] count_grid;
 	delete[] landWater_grid;
 }
@@ -32,19 +31,20 @@ float Sin1DegBlock::getMean(unsigned long x, unsigned long y) {
 	if (count_grid[index] == 0) {
 		return MISSING_VALUE;
 	} else {
-		return sum_grid[index] / (float)count_grid[index];
+		return hvSum_grid[index] / (float)count_grid[index];
 	}
 
 }
 
-void Sin1DegBlock::addValue(float val, unsigned long x, unsigned long y) {
+void Sin1DegBlock::addValue(float hhVal, float hvVal, unsigned long x, unsigned long y) {
 
 	if ((x > TARGET_XDIM) || (y > TARGET_YDIM)) {
 		throw; //out of bounds
 	}
 
 	unsigned long index = y*TARGET_XDIM + x;
-	sum_grid[index] += val;
+	hhSum_grid[index] += hhVal;
+	hvSum_grid[index] += hvVal;
 	++count_grid[index];
 }
 
@@ -61,50 +61,20 @@ void Sin1DegBlock::addLandWaterPixel(unsigned long x, unsigned long y, bool isLa
 void Sin1DegBlock::reset() {
 
 	for (unsigned long i=0; i<TARGET_XDIM*TARGET_YDIM; ++i) {
-		sum_grid[i] = 0;
+		hhSum_grid[i] = 0;
+		hvSum_grid[i] = 0;
 		count_grid[i] = 0;
+		landWater_grid[i] = 0;
 	}
 
 }
 
-void Sin1DegBlock::writeMeanAsFloat(std::ofstream *outValStream, std::ofstream *outMaskStream) {
-	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
-
-	//Check if stream is ok to be written to
-	if (!outstream->is_open()) { throw; }
-
-	//Create memory block to hold mean values
-	float *meanGrid = new float[block_length];
-
-	//Create memory block to hold land mask
-	char *landMaskGrid = new char[block_length];
-
-	//calculate means
-
-	for (unsigned long long i=0; i<block_length; ++i) {
-		if (count_grid[i] > 0) {
-			meanGrid[i] = sum_grid[i] / (float)count_grid[i];
-		} else {
-			meanGrid[i] = MISSING_VALUE;
-		}
-
-		//create landmask
-		landMaskGrid[i] = landWater_grid[i] >= 0;
-
-	}
-
-	outValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(float)));
-	outMaskStream->write(landMaskGrid, block_length);
-
-	delete[] meanGrid;
-	delete[] landMaskGrid;
-}
-
-void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *outMaskStream) {
-	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
-
+void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream *outHVValStream, std::ofstream *outMaskStream) {
 	//check if stream is ok to be written to
-	if (!outstream->is_open()) { throw; }
+	if (!(outHHValstream->is_open()  && outHVValStream->is_open())) { throw; }
+
+
+	const unsigned long long block_length = TARGET_XDIM*TARGET_YDIM;
 
 	//Create memory block to hold mean values
 	uint16_t *meanGrid = new uint16_t[block_length];
@@ -116,7 +86,7 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *
 
 	for (unsigned long long i=0; i<block_length; ++i) {
 		if (count_grid[i] > 0) {
-			meanGrid[i] = (uint16_t)((sum_grid[i] / (float)count_grid[i])*10000);
+			meanGrid[i] = (uint16_t)((hhSum_grid[i] / (float)count_grid[i])*10000);
 		} else {
 			meanGrid[i] = MISSING_VALUE;
 		}
@@ -125,8 +95,25 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outValStream, std::ofstream *
 
 	}
 
-	outValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(uint16_t)));
+	outHHValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(uint16_t)));
 	outMaskStream->write(landMaskGrid, block_length);
+
+
+	//Work on HV
+
+	for (unsigned long lon i=0; i<block_length; ++i) {
+		if (landMaskGrid[i]) {
+			if (count_grid[i] > 0) {
+				meanGrid[i] = (uint16_t)((hvSum_grid[i] / (float)count_grid[i])*10000);
+			} else {
+				meanGrid[i] = MISSING_VALUE;
+			}
+
+		} else {
+			meanGrid[i] = MISSING_VALUE;
+		}
+	}
+	outHVValStream->write(reinterpret_cast<const char*>(meanGrid), std::streamsize(block_length*sizeof(uint16_t)));
 
 	delete[] meanGrid;
 	delete[] landMaskGrid;
