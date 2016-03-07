@@ -158,7 +158,7 @@ unsigned long ALOS1DegBlock::vertMap(unsigned int tileY) {
 	return temp1;
 }
 
-void ALOS1DegBlock::regrid(Sin1DegBlock* hhOutBlock, Sin1DegBlock* hvOutBlock) {
+void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 	
 
 
