@@ -200,7 +200,9 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 					outBlock->addLandWaterPixel(targetX, targetY, true);
 				case 255:
 					//land
-					outBlock->addValue(hh_grid[index], hv_grid[index], targetX, targetY);
+					float hh = dnToLinearPower(hh_grid[index]);
+					float hv = dnToLinearPower(hv_grid[index]);
+					outBlock->addValue(hh, hv, targetX, targetY);
 					outBlock->addLandWaterPixel(targetX, targetY, true);
 			}
 					
@@ -209,5 +211,13 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 			
 		}
 	}
+
+}
+
+float ALOS1DegBlock::dnToLinearPower(ALOS_TYPE value) {
+
+	double temp_value = (double)value;
+	double dB = 20 * log10(temp_value) - 83;
+	return (float)pow(10, 0.1*dB);
 
 }

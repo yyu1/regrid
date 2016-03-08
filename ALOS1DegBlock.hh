@@ -46,6 +46,8 @@ class ALOS1DegBlock
 		//This function does the main work of putting ALOS looks into output Sin1DegBlocks.
 		void regrid(Sin1DegBlock *outBlock);
 
+		float dnToLinearPower(ALOS_TYPE value);
+
 
 };
 
