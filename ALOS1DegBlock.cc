@@ -135,7 +135,7 @@ void ALOS1DegBlock::readTile8(std::ifstream *inFile, unsigned char *valueBlock, 
 	if (longitude < -180 || longitude > 179) {throw;}
 	if (inFile->good()) {
 		for (unsigned long j=0; j<ALOS_TILE_YDIM; ++j) {
-			inFile->read((char*)(valueBlock+blockNPixelOffset(longitude, j)), std::streamsize(ALOS_TILE_XDIM*sizeof(ALOS_TYPE)));
+			inFile->read((char*)(valueBlock+blockNPixelOffset(longitude, j)), std::streamsize(ALOS_TILE_XDIM));
 		}
 	} else {
 		//Fill with padding of missing value
@@ -180,9 +180,10 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 
 	for (unsigned int j=0; j<ALOS_TILE_YDIM; ++j) {
 		latitude = (double)myLatitude - ((double)j+0.5)*ALOS_PIXEL_SIZE_DEGREES;
+		//std::cout << j << " " << latitude << '\n';
 		targetY = vertMap(j);
 		for (unsigned long i=0; i<ALOS_BLOCK_XDIM; ++i) {
-			index = (unsigned long long)j*ALOS_BLOCK_XDIM + i;
+			index = ((unsigned long long)j)*((unsigned long long)ALOS_BLOCK_XDIM) + i;
 
 			if (mask_grid[index] == 0) {continue;} //Alos pixel has no data
 
