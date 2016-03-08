@@ -19,8 +19,8 @@ int main() {
 	std::ofstream hhOutFStream, hvOutFStream, maskOutFStream;
 
 	hhOutFStream.open(hhFile, std::ios::binary | std::ios::out);
-	hvOutFStream.open(hhFile, std::ios::binary | std::ios::out);
-	maskOutFStream.open(hhFile, std::ios::binary | std::ios::out);
+	hvOutFStream.open(hvFile, std::ios::binary | std::ios::out);
+	maskOutFStream.open(maskFile, std::ios::binary | std::ios::out);
 
 	outBlock.writeMeanAsInt16(&hhOutFStream, &hvOutFStream, &maskOutFStream);
 

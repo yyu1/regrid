@@ -187,7 +187,7 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 			if (mask_grid[index] == 0) {continue;} //Alos pixel has no data
 
 			targetX = horzMap(i, latitude);
-			std::cout << targetX << " " << targetY << " " << latitude <<  " " << i << '\n';
+			//std::cout << targetX << " " << targetY << " " << latitude <<  " " << i << '\n';
 			switch(mask_grid[index]) {
 				case 50:
 					//water
