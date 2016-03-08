@@ -87,11 +87,15 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream
 	for (unsigned long long i=0; i<block_length; ++i) {
 		if (count_grid[i] > 0) {
 			meanGrid[i] = (uint16_t)((hhSum_grid[i] / (float)count_grid[i])*10000);
+			if (landWater_grid[i] >=0) {
+				landMaskGrid[i] = 2;
+			} else {
+				landMaskGrid[i] = 1;
+			}
 		} else {
 			meanGrid[i] = MISSING_VALUE;
+			landMaskGrid[i] = 0;
 		}
-		//create landmask
-		landMaskGrid[i] = landWater_grid[i] >= 0;
 
 	}
 
@@ -102,7 +106,7 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream
 	//Work on HV
 
 	for (unsigned long long i=0; i<block_length; ++i) {
-		if (landMaskGrid[i]) {
+		if (landMaskGrid[i]==2) {
 			if (count_grid[i] > 0) {
 				meanGrid[i] = (uint16_t)((hvSum_grid[i] / (float)count_grid[i])*10000);
 			} else {
