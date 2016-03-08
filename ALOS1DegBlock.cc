@@ -39,19 +39,16 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	
 
 		//Read HH
-		std::cout << "Reading " << hhTileName << '\n';
 		inFile.open(hhTileName, std::ios::binary | std::ios::in);
 		readTile16(&inFile, hh_grid, i);
 		inFile.close();
 
 		//Read HV
-		std::cout << "Reading " << hvTileName << '\n';
 		inFile.open(hvTileName, std::ios::binary | std::ios::in);
 		readTile16(&inFile, hv_grid, i);
 		inFile.close();
 
 		//Read mask
-		std::cout << "Reading " << maskTileName << '\n';
 		inFile.open(maskTileName, std::ios::binary | std::ios::in);
 		readTile8(&inFile, mask_grid, i);
 		inFile.close();
@@ -164,12 +161,15 @@ unsigned long ALOS1DegBlock::horzMap(unsigned long xPix, double latitude) {
 
 	//Convert Latitude to Radians
 	latitude = latitude * M_PI / 180;
+	
+	//scaling ratio
+	const double scalingRatio = (double)TARGET_XDIM/(double)ALOS_BLOCK_XDIM;
 
 	//convert xPix to a unit that is signed
-	double xValue = (double)xPix - (ALOS_BLOCK_XDIM/2) + 0.5;
+	double xValue = (double)xPix*scalingRatio - (TARGET_XDIM/2) + 0.5;
 	xValue = xValue * cos(latitude);
 
-	return (unsigned long)(xValue + (ALOS_BLOCK_XDIM/2));
+	return (unsigned long)(xValue + (TARGET_XDIM/2));
 
 }
 
@@ -187,6 +187,7 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 			if (mask_grid[index] == 0) {continue;} //Alos pixel has no data
 
 			targetX = horzMap(i, latitude);
+			std::cout << targetX << " " << targetY << " " << latitude <<  " " << i << '\n';
 			switch(mask_grid[index]) {
 				case 50:
 					//water
