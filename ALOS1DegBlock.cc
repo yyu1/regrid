@@ -188,23 +188,26 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 			if (mask_grid[index] == 0) {continue;} //Alos pixel has no data
 
 			targetX = horzMap(i, latitude);
-			//std::cout << targetX << " " << targetY << " " << latitude <<  " " << i << '\n';
+			float hh = dnToLinearPower(hh_grid[index]);
+			float hv = dnToLinearPower(hv_grid[index]);
+			outBlock->addValue(hh, hv, targetX, targetY);
 			switch(mask_grid[index]) {
 				case 50:
 					//water
 					outBlock->addLandWaterPixel(targetX, targetY, false);
+					break;
 				case 100:
 					//layover
 					outBlock->addLandWaterPixel(targetX, targetY, true);
+					break;
 				case 150:
 					//shadow
 					outBlock->addLandWaterPixel(targetX, targetY, true);
+					break;
 				case 255:
 					//land
-					float hh = dnToLinearPower(hh_grid[index]);
-					float hv = dnToLinearPower(hv_grid[index]);
-					outBlock->addValue(hh, hv, targetX, targetY);
 					outBlock->addLandWaterPixel(targetX, targetY, true);
+					break;
 			}
 					
 
