@@ -24,9 +24,8 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 
 	//Read data from files into new grid
 	std::ifstream inFile;
-	std::cout << "Reading tiles for latitude " << latitude;
+	std::cout << "Reading tiles for latitude " << latitude << '\n';
 	for (int i=-180; i < 180; ++i) {
-		std::cout << '.';
 		std::string tileFilePrefix = blockFilePrefix;
 		tileFilePrefix.append(this->construct_tile_name(i, myLatitude));
 		tileFilePrefix.append("_07_");
@@ -40,22 +39,24 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	
 
 		//Read HH
+		std::cout << "Reading " << hhTileName << '\n';
 		inFile.open(hhTileName, std::ios::binary | std::ios::in);
 		readTile16(&inFile, hh_grid, i);
 		inFile.close();
 
 		//Read HV
+		std::cout << "Reading " << hvTileName << '\n';
 		inFile.open(hvTileName, std::ios::binary | std::ios::in);
 		readTile16(&inFile, hv_grid, i);
 		inFile.close();
 
 		//Read mask
+		std::cout << "Reading " << maskTileName << '\n';
 		inFile.open(maskTileName, std::ios::binary | std::ios::in);
 		readTile8(&inFile, mask_grid, i);
 		inFile.close();
 
 	}
-	std::cout << '\n';
 }
 
 
@@ -178,7 +179,7 @@ void ALOS1DegBlock::regrid(Sin1DegBlock* outBlock) {
 	unsigned long targetX, targetY;
 
 	for (unsigned int j=0; j<ALOS_TILE_YDIM; ++j) {
-		latitude = (double)myLatitude + ((double)j+0.5)*ALOS_PIXEL_SIZE_DEGREES;
+		latitude = (double)myLatitude - ((double)j+0.5)*ALOS_PIXEL_SIZE_DEGREES;
 		targetY = vertMap(j);
 		for (unsigned long i=0; i<ALOS_BLOCK_XDIM; ++i) {
 			index = (unsigned long long)j*ALOS_BLOCK_XDIM + i;

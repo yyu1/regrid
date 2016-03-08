@@ -6,7 +6,9 @@
 int main() {
 
 	ALOS1DegBlock testblock(1);
+	std::cout << "instantiating target memory blocks..." << '\n';
 	Sin1DegBlock outBlock;
+	std::cout << "done instantiating target memory blocks." << '\n';
 
 	testblock.regrid(&outBlock);
 
