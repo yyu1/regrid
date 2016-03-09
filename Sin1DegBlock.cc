@@ -94,7 +94,7 @@ void Sin1DegBlock::writeMeanAsInt16(std::ofstream *outHHValStream, std::ofstream
 			}
 		} else {
 			meanGrid[i] = MISSING_VALUE;
-			landMaskGrid[i] = 0;
+			(landWater_grid[i] > 0) ? landMaskGrid[i] = 2 : landMaskGrid[i] = 0;
 		}
 
 	}
