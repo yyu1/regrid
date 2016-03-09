@@ -33,6 +33,7 @@ class ALOS1DegBlock
 		unsigned long long blockNPixelOffset(int tileLongitude, unsigned long long tileY);
 		void readTile16(std::ifstream *inFile, ALOS_TYPE *valueBlock, int longitude);
 		void readTile8(std::ifstream *inFile, unsigned char *valueBlock, int longitude);
+		void loadData(int latitude);
 
 	public:
 		static unsigned long vertMap(unsigned int tileY);  //maps tileY to output regridded y

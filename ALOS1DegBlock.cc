@@ -4,7 +4,6 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	if (latitude > 90 || latitude < -89)  {throw;}
 
 	data_top_dir = "/nobackupp6/nexprojects/CMS-ALOS/25m/2007/uncompressed/";
-	myLatitude = latitude;
 
 
 	//allocate heap space for the data block
@@ -14,6 +13,13 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	hh_grid = new ALOS_TYPE[block_npixels];
 	hv_grid = new ALOS_TYPE[block_npixels];
 	mask_grid = new unsigned char[block_npixels];
+
+	loadData(latitude);
+}
+
+void ALOS1DegBlock::loadData(int latitude) {
+	if (latitude > 90 || latitude < -89)  {throw;}
+	myLatitude = latitude;
 
 	std::string blockFilePrefix = data_top_dir;
 	if (myLatitude >= 0) {
@@ -54,6 +60,8 @@ ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 		inFile.close();
 
 	}
+
+
 }
 
 
@@ -65,6 +73,13 @@ ALOS1DegBlock::~ALOS1DegBlock() {
 
 int ALOS1DegBlock::currentLatitude() {
 	return myLatitude;
+}
+
+void ALOS1DegBlock::reload(int latitude) {
+	//reload tiles from given latitude
+	if (latitude == myLatitude) {return;}  //No change in latitude, we don't need to do anything
+	
+	loadData(latitude);
 }
 
 //This returns the pixel offset (array index for the alos1deg source block) for a given tile and row within tile
