@@ -24,6 +24,7 @@ int main() {
 
 	
 	for (int j=89; j>-90; --j) {
+		std::cout << "Working on latitude " << j << "...\n";
 		alosblock.reload(j);
 		outBlock.reset();
 		alosblock.regrid(&outBlock);
