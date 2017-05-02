@@ -3,7 +3,7 @@
 ALOS1DegBlock::ALOS1DegBlock(int latitude) {
 	if (latitude > 90 || latitude < -89)  {throw;}
 
-	data_top_dir = "/nobackupp6/nexprojects/CMS-ALOS/25m/2007/uncompressed/";
+	data_top_dir = "/nobackupp6/nexprojects/CMS-ALOS/25m/2008/uncompressed/";
 
 
 	//allocate heap space for the data block
