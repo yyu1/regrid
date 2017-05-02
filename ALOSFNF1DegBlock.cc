@@ -35,11 +35,12 @@ void ALOSFNF1DegBlock::loadData(int latitude) {
 		tileFilePrefix.append("_07_");
 		
 		std::string fnfTileName = tileFilePrefix;
-		fnfTileName.append("_C");
+		fnfTileName.append("C");
 	
 
 		//Read FNF
 		inFile.open(fnfTileName, std::ios::binary | std::ios::in);
+		std::cout << "reading tile: " << fnfTileName << '\n';
 		readTile8(&inFile, fnf_grid, i);
 		inFile.close();
 	}

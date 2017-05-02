@@ -66,7 +66,7 @@ void SinFNF1DegBlock::writeFNFOutput(std::ofstream *outFNFStream) {
 
 	for (unsigned long long i=0; i<block_length; ++i) {
 		if (forest_count_grid[i]+water_count_grid[i]+nonforest_count_grid[i] > 0) {
-			outFNFGrid[i] = (unsigned char)((float)forest_count_grid[i] / ((float)nonforest_count_grid[i] + (float)water_count_grid[i])*100);
+			outFNFGrid[i] = (unsigned char)((float)forest_count_grid[i] / ((float)forest_count_grid[i] + (float)nonforest_count_grid[i] + (float)water_count_grid[i])*100);
 		} else {
 			outFNFGrid[i] = 0;
 		}
